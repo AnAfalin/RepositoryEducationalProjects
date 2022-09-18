@@ -2,6 +2,26 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+target/
+.idea/
+.idea
+.repository/
+*.iml
+*.iws
+/lib/
+
+*.class
+*.info
+*.properties
+*.jar
+
+
+
+/out/
+/JavaRushPlugin.properties
+/Instruction.png
+/out.log
+/out.log.*
 
 ### Eclipse ###
 .apt_generated
