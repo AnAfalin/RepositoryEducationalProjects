@@ -6,10 +6,12 @@ import org.apache.poi.ss.usermodel.Row;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class ExcelUtils {
-    public static void writeExcelFile(List<User> userList, File file){
+    public static void writeExcelFile(List<User> userList, File file) {
+
         HSSFWorkbook book = new HSSFWorkbook();                         //создание объекта файла
         HSSFSheet sheet = book.createSheet("Users Sheet");     //создание нового листа в объекте
         fillHeaders(sheet);
@@ -19,46 +21,45 @@ public class ExcelUtils {
             lastEmptyRow++;
         }
 
-        try {
-            book.write(new FileOutputStream(file));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)){
+            book.write(fileOutputStream);
             book.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void fillHeaders(HSSFSheet sheet){
-        Row row0 = sheet.createRow(0);   //Создание первой строки, нумерация начинается с 0
-        Cell cell0 = row0.createCell(0);      //Создание в строке первой ячейки, нумерация с 0
-        cell0.setCellValue("Firstname");       //Установление имени ячейки
+    private static void fillHeaders(HSSFSheet sheet) {
 
-        Cell cell1 = row0.createCell(1);
-        cell1.setCellValue("Lastname");
+        Class<User> userClass = User.class;
+        Field[] declaredFields = userClass.getDeclaredFields();
 
-        Cell cell2 = row0.createCell(2);
-        cell2.setCellValue("Age");
+        Row row = sheet.createRow(0);
 
-        Cell cell3 = row0.createCell(3);
-        cell3.setCellValue("Profession");
+        for (int i = 0; i < declaredFields.length; i++) {
+            Cell cell = row.createCell(i);
+            String fieldName = declaredFields[i].getName();
+            cell.setCellValue(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+        }
+
     }
 
-    private static void writeUser(HSSFSheet sheet, User user, int numberRow){
+    private static void writeUser(HSSFSheet sheet, User user, int numberRow) {
         Row row = sheet.createRow(numberRow);
-        Cell cell0 = row.createCell(0);
-        cell0.setCellValue(user.getFirstname());
 
-        Cell cell1 = row.createCell(1);
-        cell1.setCellValue(user.getLastname());
+        Field[] declaredFields = user.getClass().getDeclaredFields();
 
-        Cell cell3 = row.createCell(2);
-        cell3.setCellValue(user.getAge());
-
-        Cell cell4 = row.createCell(3);
-        cell4.setCellValue(user.getProfession());
+        for (int i = 0; i < declaredFields.length; i++) {
+            Cell cell = row.createCell(i);
+            declaredFields[i].setAccessible(true);
+            Object valueField = "";
+            try {
+                valueField = declaredFields[i].get(user);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            cell.setCellValue(valueField.toString());
+        }
     }
 
 
