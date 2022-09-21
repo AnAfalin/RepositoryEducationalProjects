@@ -1,3 +1,5 @@
+package com.lazarenko;
+
 public class User {
     private String firstname;
     private String lastname;
