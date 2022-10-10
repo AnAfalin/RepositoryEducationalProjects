@@ -13,12 +13,14 @@ public class ClientRepository {
     }
 
     public boolean createTableClients() {
-        String SQL = "CREATE TABLE clients " +
-                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                "name VARCHAR(15) NOT NULL, " +
-                "age INT, " +
-                "country VARCHAR(15), " +
-                "total_amount_order DECIMAL(8, 2));";
+//        String SQL = "CREATE TABLE clients " +
+//                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+//                "name VARCHAR(15) NOT NULL, " +
+//                "age INT, " +
+//                "country VARCHAR(15), " +
+//                "total_amount_order DECIMAL(8, 2));";
+
+        String SQL =  SQLFileUtils.readSqlQuery("JDBC-Homework\\src\\main\\sqlFiles\\createTableClients.txt");
 
         try (Statement statement = connection.createStatement()){
             System.out.println("table 'clients' was created");
@@ -132,13 +134,14 @@ public class ClientRepository {
     }
 
     public Map<Client, Order> getMapClientOrderById(int id){
-        String SQL = "SELECT * FROM clients c " +
-                "INNER JOIN orders o " +
-                "ON c.id = o.client_id " +
-                "WHERE c.id = ";
+//        String SQL = "SELECT * FROM clients c " +
+//                "INNER JOIN orders o " +
+//                "ON c.id = o.client_id " +
+//                "WHERE c.id = ";
+        String SQL =  SQLFileUtils.readSqlQuery("JDBC-Homework\\src\\main\\sqlFiles\\getMapClientOrderById.txt") + id;
 
         try(Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery((SQL + id).toString())){
+            ResultSet resultSet = statement.executeQuery((SQL).toString())){
 
             while (resultSet.next()) {
                 Long idClient = resultSet.getLong("c.id");
