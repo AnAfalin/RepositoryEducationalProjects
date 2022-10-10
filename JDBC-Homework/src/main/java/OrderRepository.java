@@ -12,13 +12,15 @@ public class OrderRepository {
     }
 
     public boolean createTableOrders() {
-        String SQL = "CREATE TABLE orders " +
-                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                "product VARCHAR(30) NOT NULL," +
-                "price DOUBLE(8,2) NOT NULL," +
-                "date_time_order DATETIME DEFAULT NOW() not null, " +
-                "client_id BIGINT, " +
-                "FOREIGN KEY (client_id) REFERENCES clients(id))";
+//        String SQL = "CREATE TABLE orders " +
+//                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+//                "product VARCHAR(30) NOT NULL," +
+//                "price DOUBLE(8,2) NOT NULL," +
+//                "date_time_order DATETIME DEFAULT NOW() not null, " +
+//                "client_id BIGINT, " +
+//                "FOREIGN KEY (client_id) REFERENCES clients(id))";
+
+        String SQL = SQLFileUtils.readSqlQuery("JDBC-Homework\\src\\main\\sqlFiles\\createTableOrders.txt");
 
         try (Statement statement = connection.createStatement()){
             System.out.println("table 'orders' was created");
@@ -65,14 +67,14 @@ public class OrderRepository {
             }else {
                 preparedStatement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             }
-            preparedStatement.setLong(5, order.getClient_id());
+            preparedStatement.setLong(5, order.getClientId());
 
             ClientRepository clientRepository = new ClientRepository();
-            Double oldAmountOrder = clientRepository.getAmountOrder(order.getClient_id());
+            Double oldAmountOrder = clientRepository.getAmountOrder(order.getClientId());
             if(oldAmountOrder != null){
-                clientRepository.updateTotalAmountOrderByID(order.getClient_id(), oldAmountOrder + order.getPrice());
+                clientRepository.updateTotalAmountOrderByID(order.getClientId(), oldAmountOrder + order.getPrice());
             }else {
-                clientRepository.updateTotalAmountOrderByID(order.getClient_id(), order.getPrice());
+                clientRepository.updateTotalAmountOrderByID(order.getClientId(), order.getPrice());
             }
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException sqlException) {
