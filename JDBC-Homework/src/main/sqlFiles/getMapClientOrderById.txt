@@ -1,0 +1,4 @@
+SELECT * FROM clients c
+ INNER JOIN orders o
+ ON c.id = o.client_id
+ WHERE c.id =

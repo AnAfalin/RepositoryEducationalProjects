@@ -1,0 +1,7 @@
+CREATE TABLE orders
+(id BIGINT PRIMARY KEY AUTO_INCREMENT,
+product VARCHAR(30) NOT NULL,
+price DOUBLE(8,2) NOT NULL,
+date_time_order DATETIME DEFAULT NOW() not null,
+client_id BIGINT,
+FOREIGN KEY (client_id) REFERENCES clients(id));
