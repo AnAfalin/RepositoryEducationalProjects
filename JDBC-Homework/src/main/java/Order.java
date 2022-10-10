@@ -1,25 +1,29 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 public class Order {
     private Long id;
     private String product;
-    private Double price;
+    private BigDecimal price;
     private LocalDateTime dateTimeOrder;
-    private Long client_id;
+    private Long clientId;
 
-    public Order(String product, Double price, LocalDateTime dateTimeOrder, int client_id) {
+    public Order(String product, double price, LocalDateTime dateTimeOrder, int clientId) {
         this.product = product;
-        this.price = price;
+        this.price = new BigDecimal(price, new MathContext(2));
         this.dateTimeOrder = dateTimeOrder;
-        this.client_id = (long) client_id;
+        this.clientId = (long) clientId;
     }
 
-    public Order(Long id, String product, Double price, LocalDateTime dateTimeOrder, Long client_id) {
+    public Order(Long id, String product, double price, LocalDateTime dateTimeOrder, Long clientId) {
         this.id = id;
         this.product = product;
-        this.price = price;
+        this.price = new BigDecimal(price).setScale(2, RoundingMode.CEILING);
+
         this.dateTimeOrder = dateTimeOrder;
-        this.client_id = client_id;
+        this.clientId = clientId;
     }
 
     public Long getId() {
@@ -38,12 +42,12 @@ public class Order {
         this.product = product;
     }
 
-    public Double getPrice() {
-        return price;
+    public double getPrice() {
+        return price.doubleValue();
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void BigDecimal(Double price) {
+        this.price = new BigDecimal(price).setScale(2, RoundingMode.CEILING);
     }
 
     public LocalDateTime getDateTimeOrder() {
@@ -54,12 +58,12 @@ public class Order {
         this.dateTimeOrder = dateTimeOrder;
     }
 
-    public Long getClient_id() {
-        return client_id;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class Order {
                 ", product='" + product + '\'' +
                 ", price=" + price +
                 ", dateTimeOrder=" + dateTimeOrder +
-                ", client_id=" + client_id +
+                ", client_id=" + clientId +
                 '}';
     }
 }
